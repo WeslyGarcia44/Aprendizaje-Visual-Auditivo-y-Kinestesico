@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identifica tu Estilo de Aprendizaje</title>
+    <link rel="stylesheet" href="./styles.css">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f8ff;
+        }
+        .homepage-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+        .title {
+            font-size: 3rem;
+            color: #0078d7;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            gap: 20px;
+        }
+        .button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            background-color: #0078d7;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #005bb5;
+        }
+        /* Estilo de las figuras */
+        .floating-figure {
+            position: absolute;
+            animation: float 10s infinite alternate;
+        }
+        .circle {
+            border-radius: 50%;
+        }
+        .triangle {
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid lightcoral;
+        }
+        .square {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="homepage-container">
+        <h1 class="title">Identifica tu Estilo de Aprendizaje</h1>
+        <div class="button-container">
+            <a href="./login.html" class="button">Iniciar Sesión</a>
+            <a href="./register.html" class="button">Crear Cuenta</a>
+        </div>
+    </div>
+
+    <!-- Contenedor de figuras -->
+    <div id="figures-container"></div>
+
+    <script>
+        // Colores y formas de las figuras
+        const colors = ["lightcoral", "lightgreen", "lightblue", "gold", "purple"];
+        const shapes = ["circle", "triangle", "square"];
+        const figuresContainer = document.getElementById("figures-container");
+
+        function createFigure() {
+            const shape = shapes[Math.floor(Math.random() * shapes.length)];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const size = Math.floor(Math.random() * 40) + 20;
+
+            const figure = document.createElement("div");
+            figure.classList.add("floating-figure", shape);
+            figure.style.backgroundColor = color;
+            if (shape === "triangle") {
+                figure.style.borderBottomColor = color; // Color para triángulos
+                figure.style.width = "0";
+                figure.style.height = "0";
+                figure.style.borderLeft = `${size / 2}px solid transparent`;
+                figure.style.borderRight = `${size / 2}px solid transparent`;
+                figure.style.borderBottom = `${size}px solid ${color}`;
+            } else {
+                figure.style.width = `${size}px`;
+                figure.style.height = `${size}px`;
+            }
+
+            // Posición inicial aleatoria
+            figure.style.left = `${Math.random() * window.innerWidth}px`;
+            figure.style.top = `${Math.random() * window.innerHeight}px`;
+
+            figuresContainer.appendChild(figure);
+
+            animateFigure(figure);
+        }
+
+        function animateFigure(figure) {
+            let xSpeed = (Math.random() - 0.5) * 6; // Velocidad en X
+            let ySpeed = (Math.random() - 0.5) * 6; // Velocidad en Y
+
+            function moveFigure() {
+                const rect = figure.getBoundingClientRect();
+                const parentRect = document.body.getBoundingClientRect();
+
+                // Rebote en los bordes
+                if (rect.left <= 0 || rect.right >= parentRect.width) {
+                    xSpeed *= -1;
+                }
+                if (rect.top <= 0 || rect.bottom >= parentRect.height) {
+                    ySpeed *= -1;
+                }
+
+                // Actualizar posición
+                figure.style.left = `${rect.left + xSpeed}px`;
+                figure.style.top = `${rect.top + ySpeed}px`;
+
+                requestAnimationFrame(moveFigure);
+            }
+
+            moveFigure();
+        }
+
+        // Crear múltiples figuras
+        for (let i = 0; i < 15; i++) {
+            createFigure();
+        }
+    </script>
+</body>
+</html>

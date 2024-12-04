@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coloca las Figuras en Posiciones Aleatorias</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #0078d7;
+            margin: 20px 0 10px;
+            text-align: center;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .game-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .timer {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #0078d7;
+        }
+
+        .pieces-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: auto;
+        }
+
+        .draggable {
+            width: 60px;
+            height: 60px;
+            cursor: grab;
+        }
+
+        .piece-circle { background-color: lightgreen; border-radius: 50%; }
+        .piece-square { background-color: lightblue; }
+        .piece-triangle {
+            background-color: transparent;
+            position: relative;
+            width: 0;
+            height: 0;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 60px solid lightcoral;
+        }
+
+        .piece-star {
+            background-color: transparent;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .piece-star::before {
+            content: '';
+            position: absolute;
+            display: block;
+            width: 60px;
+            height: 60px;
+            background: lightyellow;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+
+        .drop-target {
+            width: 60px;
+            height: 60px;
+            border: 2px dashed #4a90e2;
+            position: absolute;
+        }
+
+        .drop-target[data-id="circle"]::before {
+            content: '';
+            width: 50px;
+            height: 50px;
+            background-color: rgba(144, 238, 144, 0.5);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .drop-target[data-id="square"]::before {
+            content: '';
+            width: 50px;
+            height: 50px;
+            background-color: rgba(173, 216, 230, 0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .drop-target[data-id="triangle"]::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid rgba(255, 182, 193, 0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .drop-target[data-id="star"]::before {
+            content: '';
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 223, 0, 0.5);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #continue-btn {
+            display: none;
+            background-color: #4a90e2;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        #continue-btn:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <h1>Coloca las Figuras en Posiciones Aleatorias</h1>
+    <p>Arrastra cada figura hacia el lugar correcto. Las posiciones de los cuadros son aleatorias, pero siempre visibles.</p>
+    <div class="game-container">
+        <div class="timer" id="timer">Tiempo: 0s</div>
+        <div class="pieces-container">
+            <div class="draggable piece-triangle" draggable="true" data-id="triangle"></div>
+            <div class="draggable piece-circle" draggable="true" data-id="circle"></div>
+            <div class="draggable piece-star" draggable="true" data-id="star"></div>
+            <div class="draggable piece-square" draggable="true" data-id="square"></div>
+        </div>
+        <button id="continue-btn" onclick="redirectRandomExercise()">Continuar</button>
+    </div>
+    <script>
+        const timerElement = document.getElementById('timer');
+        const continueButton = document.getElementById('continue-btn');
+        const gameContainer = document.querySelector('.game-container');
+        const containerWidth = 600;
+        const containerHeight = 600;
+        const reservedMargin = 100;
+
+        let startTime;
+        let timerInterval;
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                timerElement.textContent = `Tiempo: ${elapsedTime}s`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+            timerElement.textContent = `Tiempo total: ${elapsedTime}s`;
+            continueButton.style.display = 'block';
+        }
+
+        function checkCompletion() {
+            const dropTargets = document.querySelectorAll('.drop-target');
+            const allMatched = Array.from(dropTargets).every(target => {
+                const item = target.querySelector('.draggable');
+                return item && item.dataset.id === target.dataset.id;
+            });
+
+            if (allMatched) {
+                stopTimer();
+            }
+        }
+
+        function createDropTargets() {
+            const shapes = ['circle', 'square', 'triangle', 'star'];
+            const positions = [];
+
+            shapes.forEach(shape => {
+                let dropTarget;
+                let isValidPosition = false;
+
+                while (!isValidPosition) {
+                    const top = Math.random() * (containerHeight - reservedMargin);
+                    const left = Math.random() * (containerWidth - reservedMargin);
+
+                    isValidPosition = positions.every(pos => {
+                        const dx = Math.abs(pos.left - left);
+                        const dy = Math.abs(pos.top - top);
+                        return dx > 80 && dy > 80; // Asegurar que no se solapen
+                    });
+
+                    if (isValidPosition) {
+                        positions.push({ top, left });
+                        dropTarget = document.createElement('div');
+                        dropTarget.classList.add('drop-target');
+                        dropTarget.dataset.id = shape;
+                        dropTarget.style.top = `${top}px`;
+                        dropTarget.style.left = `${left}px`;
+
+                        dropTarget.addEventListener('dragover', event => {
+                            event.preventDefault();
+                        });
+
+                        dropTarget.addEventListener('drop', event => {
+                            event.preventDefault();
+                            const draggedItemId = event.dataTransfer.getData('text/plain');
+                            const draggedItem = document.querySelector(`.draggable[data-id="${draggedItemId}"]`);
+
+                            if (draggedItem && dropTarget.children.length === 0) {
+                                dropTarget.appendChild(draggedItem);
+                                checkCompletion();
+                            }
+                        });
+
+                        gameContainer.appendChild(dropTarget);
+                    }
+                }
+            });
+        }
+
+        function redirectRandomExercise() {
+            const exercises = [
+                "../../ejercicio1.html",
+                "../../ejercicio2.html",
+                "../../ejercicio3.html",
+                "../../ejercicio4.html",
+                "../../ejercicio5.html"
+            ];
+            const randomIndex = Math.floor(Math.random() * exercises.length);
+            window.location.href = exercises[randomIndex];
+        }
+
+        document.querySelectorAll('.draggable').forEach(item => {
+            item.addEventListener('dragstart', event => {
+                event.dataTransfer.setData('text/plain', item.dataset.id);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createDropTargets();
+            startTimer();
+        });
+    </script>
+</body>
+</html>

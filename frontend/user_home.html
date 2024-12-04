@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilo del encabezado del usuario */
+        #user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4a90e2;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        #user-header span {
+            font-weight: bold;
+        }
+
+        #user-header button {
+            background: white;
+            color: #4a90e2;
+            border: 1px solid #4a90e2;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #user-header button:hover {
+            background: #4a90e2;
+            color: white;
+        }
+
+        /* Contenedor principal */
+        .container {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        /* Resultados previos */
+        #results-container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #results-container h2 {
+            color: #4a90e2;
+        }
+
+        /* Botón para iniciar el test */
+        #start-test-btn {
+            background-color: #4a90e2;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #start-test-btn:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado del usuario -->
+    <div id="user-header">
+        <span id="user-name">Cargando...</span>
+        <div>
+            <button onclick="changePassword()">Cambiar Contraseña</button>
+            <button onclick="logout()">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="container">
+        <h1>Bienvenido a tu panel</h1>
+        <div id="results-container">
+            <h2>Tus resultados anteriores</h2>
+            <ul id="results-list">
+                <!-- Los resultados previos se cargarán dinámicamente aquí -->
+            </ul>
+        </div>
+
+        <!-- Botón para iniciar el test -->
+        <button id="start-test-btn" onclick="startTest()">Iniciar Test</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

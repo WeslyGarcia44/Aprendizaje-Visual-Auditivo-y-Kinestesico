@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Visual: Cálculo de Perímetro</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        /* Estilos específicos para este ejercicio */
+        #diagram-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border: 1px solid black;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 90%;
+            margin: auto;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            font-size: 1em;
+            border: 2px solid #4a90e2;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 200px;
+            margin: 10px 0;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+
+        #result {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #4caf50;
+        }
+
+        #error {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ejercicio Visual: Cálculo de Perímetro</h1>
+        <p>Calcula el perímetro total de la siguiente figura compuesta en cm.</p>
+
+        <div id="diagram-container">
+            <div id="diagram">
+                <svg id="svg-diagram" width="300" height="300">
+                    <!-- Las figuras se añadirán aquí dinámicamente -->
+                </svg>
+            </div>
+
+            <div id="legend">
+                <!-- La leyenda se actualizará dinámicamente -->
+            </div>
+        </div>
+
+        <form id="visual-form">
+            <label for="answer">Perímetro total (cm):</label>
+            <input type="number" id="answer" placeholder="Ingresa el perímetro total en cm">
+            <button type="button" onclick="submitVisualExercise()">Enviar</button>
+        </form>
+
+        <div id="result"></div>
+        <div id="error"></div>
+
+        <!-- Botón Continuar -->
+        <button id="continue-btn" onclick="redirectRandomExercise()">Continuar</button>
+    </div>
+
+    <script>
+        function generateUniqueColors() {
+            const colors = ["lightblue", "lightgreen", "lightcoral", "lightyellow", "lightpink"];
+            return colors.sort(() => 0.5 - Math.random()).slice(0, 4); // Elegir 4 colores únicos al azar
+        }
+
+        function generateFixedCompositeFigure() {
+            const colors = generateUniqueColors();
+            const figures = [
+                { x: 10, y: 10, width: 100, height: 60, color: colors[0] },
+                { x: 110, y: 10, width: 80, height: 60, color: colors[1] },
+                { x: 10, y: 70, width: 80, height: 90, color: colors[2] },
+                { x: 90, y: 70, width: 100, height: 90, color: colors[3] }
+            ];
+            return figures;
+        }
+
+        const selectedVariant = generateFixedCompositeFigure();
+
+        function loadVariant() {
+            const svgDiagram = document.getElementById("svg-diagram");
+            const legend = document.getElementById("legend");
+            let totalPerimeter = 0;
+
+            svgDiagram.innerHTML = "";
+            legend.innerHTML = "";
+
+            selectedVariant.forEach((figure, index) => {
+                const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                rect.setAttribute("x", figure.x);
+                rect.setAttribute("y", figure.y);
+                rect.setAttribute("width", figure.width);
+                rect.setAttribute("height", figure.height);
+                rect.setAttribute("fill", figure.color);
+                rect.setAttribute("stroke", "black");
+                rect.setAttribute("stroke-width", "2");
+                svgDiagram.appendChild(rect);
+
+                const perimeter = 2 * (figure.width + figure.height);
+                totalPerimeter += perimeter;
+
+                const legendItem = document.createElement("div");
+                legendItem.classList.add("legend-item");
+                legendItem.innerHTML = `
+                    <div class="color-box" style="background-color: ${figure.color};"></div>
+                    <span>Figura ${index + 1}: Ancho ${figure.width} cm, Alto ${figure.height} cm</span>
+                `;
+                legend.appendChild(legendItem);
+            });
+
+            window.correctAnswer = totalPerimeter;
+        }
+
+        function submitVisualExercise() {
+            const userAnswer = parseInt(document.getElementById("answer").value);
+
+            if (userAnswer === window.correctAnswer) {
+                document.getElementById("result").textContent = "¡Correcto! El perímetro total es " + window.correctAnswer + " cm.";
+                document.getElementById("error").textContent = "";
+            } else {
+                document.getElementById("result").textContent = "";
+                document.getElementById("error").textContent = "Incorrecto. La respuesta correcta es " + window.correctAnswer + " cm.";
+            }
+        }
+
+        function redirectRandomExercise() {
+            const exercises = [
+                "../../ejercicio1.html",
+                "../../ejercicio2.html",
+                "../../ejercicio3.html",
+                "../../ejercicio4.html",
+                "../../ejercicio5.html"
+            ];
+            const randomIndex = Math.floor(Math.random() * exercises.length);
+            window.location.href = exercises[randomIndex];
+        }
+
+        document.addEventListener("DOMContentLoaded", loadVariant);
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Auditivo 4: Multiplicación de Canastas</title>
+    <link rel="stylesheet" href="../../styles.css"> <!-- Ruta al CSS desde subcarpeta -->
+    <style>
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 90%;
+            margin: auto;
+        }
+
+        audio {
+            margin: 20px 0;
+        }
+
+        #result-4, #error-4 {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        #result-4 {
+            color: #4caf50;
+        }
+
+        #error-4 {
+            color: #e74c3c;
+        }
+
+        #continue-btn {
+            background-color: #4a90e2;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #continue-btn:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ejercicio Auditivo 4: Multiplicación de Canastas</h1>
+        <p>Escucha la instrucción y responde el problema.</p>
+        
+        <audio controls>
+            <source src="ejercicio4_auditivo.mp3" type="audio/mp3">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+
+        <form id="auditory-form-4">
+            <label for="answer">Respuesta:</label>
+            <input type="number" id="answer-4" placeholder="Ingresa la respuesta">
+            <button type="button" onclick="submitAuditoryExercise4()">Enviar</button>
+        </form>
+
+        <div id="result-4"></div>
+        <div id="error-4"></div>
+
+        <!-- Botón para continuar -->
+        <button id="continue-btn" onclick="redirectRandomExercise()">Continuar</button>
+    </div>
+
+    <script>
+        function submitAuditoryExercise4() {
+            const correctAnswer = 84; // Respuesta correcta
+            const userAnswer = parseInt(document.getElementById("answer-4").value);
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById("result-4").textContent = "¡Correcto! Tienes 84 naranjas en total.";
+                document.getElementById("error-4").textContent = "";
+            } else {
+                document.getElementById("result-4").textContent = "";
+                document.getElementById("error-4").textContent = "Incorrecto. La respuesta correcta es 84.";
+            }
+        }
+
+        function redirectRandomExercise() {
+            const exercises = [
+                "../../ejercicio1.html",
+                "../../ejercicio2.html",
+                "../../ejercicio3.html",
+                "../../ejercicio4.html",
+                "../../ejercicio5.html"
+            ];
+            const randomIndex = Math.floor(Math.random() * exercises.length);
+            window.location.href = exercises[randomIndex];
+        }
+    </script>
+</body>
+</html>

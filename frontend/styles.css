@@ -1,0 +1,192 @@
+/* Centrar todo el contenido */
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff; /* Fondo suave */
+}
+
+/* Estilo para el contenedor principal */
+.container {
+    text-align: center;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    margin: 20px; /* Espacio alrededor en pantallas más pequeñas */
+}
+
+/* Título */
+h1 {
+    font-size: 2.5em;
+    color: #4a90e2;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Subtítulo o instrucciones */
+p {
+    font-size: 1.2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Estilo para botones principales */
+.button {
+    display: inline-block;
+    background-color: #4a90e2;
+    color: white;
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    border: none;
+}
+
+.button:hover {
+    background-color: #357ABD;
+}
+
+/* Botón alternativo */
+.button-alt {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.button-alt:hover {
+    background-color: #c0392b;
+}
+
+/* Formulario */
+form {
+    margin-top: 20px;
+}
+
+label {
+    font-size: 1.2em;
+    color: #333;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+    padding: 10px;
+    font-size: 1em;
+    border: 2px solid #4a90e2;
+    border-radius: 5px;
+    width: 80%;
+    max-width: 300px;
+    margin: 10px 0;
+}
+
+/* Estilo para elementos de audio */
+audio {
+    margin: 20px 0;
+}
+
+/* Resultado */
+#result {
+    font-size: 1.2em;
+    margin-top: 20px;
+    color: #4caf50;
+}
+
+/* Mensaje de error */
+#error {
+    font-size: 1.2em;
+    margin-top: 20px;
+    color: #e74c3c;
+}
+
+/* Para la página de inicio */
+.homepage-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #e6f7ff; /* Fondo aún más claro */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Figuras flotantes para decoración */
+.floating-figure {
+    position: absolute;
+    animation: float 10s infinite alternate;
+    border-radius: 50%;
+    opacity: 0.6;
+    z-index: -1;
+}
+
+.floating-figure.red {
+    background-color: lightcoral;
+    width: 60px;
+    height: 60px;
+}
+
+.floating-figure.green {
+    background-color: lightgreen;
+    width: 80px;
+    height: 80px;
+}
+
+.floating-figure.blue {
+    background-color: lightblue;
+    width: 100px;
+    height: 100px;
+}
+
+.floating-figure.yellow {
+    background-color: #f1c40f;
+    width: 50px;
+    height: 50px;
+}
+
+/* Animación de las figuras */
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-30px);
+    }
+}
+
+/* Estilo para la lista de estudiantes */
+.student-list {
+    text-align: left;
+    margin-top: 20px;
+    font-size: 1.1em;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.student-item {
+    margin: 5px 0;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.student-item:last-child {
+    border-bottom: none;
+}
+
+/* Centrar texto en vertical */
+.vertical-align {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio Visual: Conteo de Figuras</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 90%;
+            margin: auto;
+        }
+
+        #canvas-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border: 2px solid #4a90e2;
+            margin: 20px auto;
+            background-color: #f3f3f3;
+        }
+
+        #result, #error {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        #result {
+            color: #4caf50;
+        }
+
+        #error {
+            color: #e74c3c;
+        }
+
+        #continue-btn {
+            background-color: #4a90e2;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #continue-btn:hover {
+            background-color: #357ABD;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ejercicio Visual: Conteo de Figuras</h1>
+        <p id="question">Pregunta: ¿Cuántas figuras de un color o tipo específico hay?</p>
+
+        <div id="canvas-container">
+            <canvas id="figureCanvas" width="300" height="300"></canvas>
+        </div>
+
+        <form id="visual-form">
+            <label for="answer">Respuesta:</label>
+            <input type="number" id="answer" placeholder="Ingresa el número" min="0">
+            <button type="button" onclick="submitVisualExercise()">Enviar</button>
+        </form>
+
+        <div id="result"></div>
+        <div id="error"></div>
+
+        <!-- Botón para continuar -->
+        <button id="continue-btn" onclick="redirectRandomExercise()">Continuar</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("figureCanvas");
+        const ctx = canvas.getContext("2d");
+        const figuras = [];
+        const tiposFiguras = ["círculo", "cuadrado", "triángulo"];
+        const colores = ["rojo", "verde", "azul", "amarillo", "morado", "naranja"];
+        const minFiguras = 8;
+        const maxFiguras = 15;
+        let preguntaObjetivo;
+
+        function obtenerColorAleatorio() {
+            const coloresHex = {
+                "rojo": "#FF0000",
+                "verde": "#00FF00",
+                "azul": "#0000FF",
+                "amarillo": "#FFFF00",
+                "morado": "#800080",
+                "naranja": "#FFA500"
+            };
+            const colorAleatorio = colores[Math.floor(Math.random() * colores.length)];
+            return { nombre: colorAleatorio, hex: coloresHex[colorAleatorio] };
+        }
+
+        function obtenerTipoFiguraAleatorio() {
+            return tiposFiguras[Math.floor(Math.random() * tiposFiguras.length)];
+        }
+
+        function generarFiguras() {
+            const cantidadFiguras = Math.floor(Math.random() * (maxFiguras - minFiguras + 1)) + minFiguras;
+
+            for (let i = 0; i < cantidadFiguras; i++) {
+                const colorInfo = obtenerColorAleatorio();
+                const tipoFigura = obtenerTipoFiguraAleatorio();
+                figuras.push({
+                    tipo: tipoFigura,
+                    color: colorInfo.nombre,
+                    colorHex: colorInfo.hex,
+                    x: Math.random() * (canvas.width - 40) + 20,
+                    y: Math.random() * (canvas.height - 40) + 20,
+                    dx: (Math.random() - 0.5) * 4,
+                    dy: (Math.random() - 0.5) * 4
+                });
+            }
+        }
+
+        function dibujarFiguras() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            figuras.forEach(figura => {
+                ctx.fillStyle = figura.colorHex;
+                ctx.beginPath();
+                if (figura.tipo === "círculo") {
+                    ctx.arc(figura.x, figura.y, 15, 0, Math.PI * 2);
+                } else if (figura.tipo === "cuadrado") {
+                    ctx.rect(figura.x - 15, figura.y - 15, 30, 30);
+                } else if (figura.tipo === "triángulo") {
+                    ctx.moveTo(figura.x, figura.y - 15);
+                    ctx.lineTo(figura.x - 15, figura.y + 15);
+                    ctx.lineTo(figura.x + 15, figura.y + 15);
+                    ctx.closePath();
+                }
+                ctx.fill();
+
+                figura.x += figura.dx;
+                figura.y += figura.dy;
+                if (figura.x < 15 || figura.x > canvas.width - 15) figura.dx *= -1;
+                if (figura.y < 15 || figura.y > canvas.height - 15) figura.dy *= -1;
+            });
+        }
+
+        function animate() {
+            dibujarFiguras();
+            requestAnimationFrame(animate);
+        }
+
+        function generarPreguntaAleatoria() {
+            const tipoFigura = obtenerTipoFiguraAleatorio();
+            const colorAleatorio = obtenerColorAleatorio().nombre;
+            const tipoPregunta = Math.floor(Math.random() * 3);
+
+            let preguntaTexto;
+            if (tipoPregunta === 0) {
+                preguntaTexto = `¿Cuántas figuras de tipo ${tipoFigura} hay?`;
+                preguntaObjetivo = { tipo: tipoFigura, propiedad: "tipo" };
+            } else if (tipoPregunta === 1) {
+                preguntaTexto = `¿Cuántas figuras de color ${colorAleatorio} hay?`;
+                preguntaObjetivo = { tipo: colorAleatorio, propiedad: "color" };
+            } else if (tipoPregunta === 2) {
+                preguntaTexto = `¿Cuántos ${tipoFigura}s de color ${colorAleatorio} hay?`;
+                preguntaObjetivo = { tipo: tipoFigura, color: colorAleatorio };
+            }
+
+            document.getElementById("question").textContent = `Pregunta: ${preguntaTexto}`;
+        }
+
+        function submitVisualExercise() {
+            const respuestaUsuario = parseInt(document.getElementById("answer").value, 10);
+            let respuestaCorrecta;
+
+            if (preguntaObjetivo.propiedad === "tipo") {
+                respuestaCorrecta = figuras.filter(f => f.tipo === preguntaObjetivo.tipo).length;
+            } else if (preguntaObjetivo.propiedad === "color") {
+                respuestaCorrecta = figuras.filter(f => f.color === preguntaObjetivo.tipo).length;
+            } else {
+                respuestaCorrecta = figuras.filter(f => f.tipo === preguntaObjetivo.tipo && f.color === preguntaObjetivo.color).length;
+            }
+
+            if (respuestaUsuario === respuestaCorrecta) {
+                document.getElementById("result").textContent = "¡Correcto!";
+                document.getElementById("error").textContent = "";
+            } else {
+                document.getElementById("result").textContent = "";
+                document.getElementById("error").textContent = `Incorrecto. La respuesta correcta es ${respuestaCorrecta}.`;
+            }
+        }
+
+        function redirectRandomExercise() {
+            const exercises = [
+                "../../ejercicio1.html",
+                "../../ejercicio2.html",
+                "../../ejercicio3.html",
+                "../../ejercicio4.html",
+                "../../ejercicio5.html"
+            ];
+            const randomIndex = Math.floor(Math.random() * exercises.length);
+            window.location.href = exercises[randomIndex];
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            generarFiguras();
+            generarPreguntaAleatoria();
+            animate();
+        });
+    </script>
+</body>
+</html>
